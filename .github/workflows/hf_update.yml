@@ -32,8 +32,8 @@ jobs:
       - name: Push changes to Hugging Face Space
         run: |
           run: git push https://YOUR_USERNAME:$HF_TOKEN@huggingface.co/spaces/YOUR_USERNAME/YOUR_SPACE_NAME main        env:
-        env:
-          YOUR_USERNAME: ${{secrets.HF_USERNAME}}
-          HF_TOKEN: ${{ secrets.HF_TOKEN }}
-          SPACE_NAME: ${{secrets.HF_SPACENAME}}
+    env:
+      YOUR_USERNAME: ${{secrets.HF_USERNAME}}
+      HF_TOKEN: ${{ secrets.HF_TOKEN }}
+      SPACE_NAME: ${{secrets.HF_SPACENAME}}
     
