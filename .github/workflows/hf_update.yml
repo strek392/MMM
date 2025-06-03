@@ -20,10 +20,10 @@ jobs:
         
       - name: Clone Hugging Face Space repository
         run: |
-          git clone https://huggingface.co/spaces/YOUR_USERNAME/YOUR_SPACE_NAME
-          cd YOUR_SPACE_NAME
+          git clone https://huggingface.co/spaces/${{ secrets.HF_USERNAME }}/${{ secrets.HF_SPACENAME }}
+          cd ${{ secrets.HF_SPACENAME }}
 
-      - name: Update
+      - name: Append timestamp to Updates file
         run: |
           echo "$(date)" >> Updates  # Appende la data e l'ora corrente al file Updates
           git add Updates              # Aggiungi il file Updates alla staging area
@@ -31,9 +31,4 @@ jobs:
 
       - name: Push changes to Hugging Face Space
         run: |
-          run: git push https://YOUR_USERNAME:$HF_TOKEN@huggingface.co/spaces/YOUR_USERNAME/YOUR_SPACE_NAME main        env:
-    env:
-      YOUR_USERNAME: ${{secrets.HF_USERNAME}}
-      HF_TOKEN: ${{ secrets.HF_TOKEN }}
-      SPACE_NAME: ${{secrets.HF_SPACENAME}}
-    
+          git push https://${{ secrets.HF_USERNAME }}:${{ secrets.HF_TOKEN }}@huggingface.co/spaces/${{ secrets.HF_USERNAME }}/${{ secrets.HF_SPACENAME }} main
