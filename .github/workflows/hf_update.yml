@@ -31,5 +31,7 @@ jobs:
 
       - name: Push changes to Hugging Face Space
         run: |
-          git pull origin main  # Recupera le modifiche remote prima di fare il push
-          git push https://${{ secrets.HF_USERNAME }}:${{ secrets.HF_TOKEN }}@huggingface.co/spaces/${{ secrets.HF_USERNAME }}/${{ secrets.HF_SPACENAME }} main
+          git remote add hf https://huggingface.co/spaces/${{ secrets.HF_USERNAME }}/${{ secrets.HF_SPACENAME }}  # Aggiungi il remoto Hugging Face
+          git fetch hf  # Recupera i cambiamenti dal repository remoto di Hugging Face
+          git merge hf/main --allow-unrelated-histories  # Unisci i cambiamenti (se necessario)
+          git push https://${{ secrets.HF_USERNAME }}:${{ secrets.HF_TOKEN }}@huggingface.co/spaces/${{ secrets.HF_USERNAME }}/${{ secrets.HF_SPACENAME }} main  # Fai il push sul repository di Hugging Face
