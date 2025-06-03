@@ -1,0 +1,16 @@
+name: Rebuild HF Space
+
+on:
+  workflow_dispatch:  # Puoi avviarlo manualmente
+  push:               # O a ogni push (opzionale)
+    branches:
+      - main
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger rebuild on Hugging Face Space
+        run: |
+          curl -X POST https://api.huggingface.co/spaces/${{secrets.HF_USERNAME}}/${{HF_SPACENAME/restart \
+          -H "Authorization: Bearer ${{ secrets.HF_TOKEN }}"
