@@ -24,11 +24,15 @@ jobs:
           # Appende il timestamp al file Updates
           echo "$(date)" >> Updates
           
-          # Forza un rebuild senza cache modificando il Dockerfile
+          # Forza un rebuild senza cache creando/modificando un file dummy
+          echo "# REBUILD_TIMESTAMP: $(date)" > .rebuild_trigger
+          
+          # Opzionalmente, modifica anche il Dockerfile in modo sicuro
           if [ -f "Dockerfile" ]; then
-            # Rimuovi eventuali righe di timestamp precedenti e aggiungi quella nuova
+            # Rimuovi eventuali righe di timestamp precedenti
             sed -i '/^# REBUILD_TIMESTAMP:/d' Dockerfile
-            echo "# REBUILD_TIMESTAMP: $(date)" >> Dockerfile
+            # Inserisci il timestamp prima dell'ultima riga (CMD)
+            sed -i '$i# REBUILD_TIMESTAMP: '"$(date)" Dockerfile
           fi
           
           # Controlla se ci sono modifiche da committare
@@ -38,7 +42,7 @@ jobs:
           fi
           
           # Aggiungi e committa le modifiche
-          git add Updates Dockerfile
+          git add Updates Dockerfile .rebuild_trigger
           git commit -m "Force rebuild - Update timestamp $(date)"
           
           # Push delle modifiche a Hugging Face
