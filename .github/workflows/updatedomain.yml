@@ -64,5 +64,10 @@ jobs:
             git push origin $branch
           fi
         done
+    - name: Push to HF
+      run: git push https://HF_USERNAME:$HF_TOKEN@huggingface.co/spaces/HF_USERNAME/SPACE_NAME main
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        HF_USERNAME: ${{secrets.HF_USERNAME}}
+        SPACE_NAME: ${{secrets.HF_SPACENAME}}
