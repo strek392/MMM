@@ -36,3 +36,9 @@ jobs:
           
           # Push delle modifiche a Hugging Face
           git push https://${{ secrets.HF_USERNAME }}:${{ secrets.HF_TOKEN }}@huggingface.co/spaces/${{ secrets.HF_USERNAME }}/${{ secrets.HF_SPACENAME }} main
+      - name: Trigger Factory Rebuild on Hugging Face Space
+        run: |
+          curl -X POST \
+            -H "Authorization: Bearer ${{ secrets.HF_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            https://huggingface.co/api/spaces/${{ secrets.HF_USERNAME }}/${{ secrets.HF_SPACENAME }}/restart
