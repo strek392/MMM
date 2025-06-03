@@ -35,5 +35,5 @@ jobs:
         env:
           YOUR_USERNAME: ${{secrets.HF_USERNAME}}
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
-          SPACE_NAME: ${{secrets.HF_SPACENAME}]
+          SPACE_NAME: ${{secrets.HF_SPACENAME}}
     
