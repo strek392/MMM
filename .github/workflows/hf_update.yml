@@ -1,56 +1,38 @@
 name: Trigger Rebuild on Hugging Face Space
-
 on:
   push:
     branches:
       - main  # o il ramo che vuoi
-
 jobs:
   rebuild:
     runs-on: ubuntu-latest
     
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
       - name: Set up Git for Hugging Face Repo
         run: |
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
-
-      - name: Clone Hugging Face Space repository
+        
+      - name: Clone and update Hugging Face Space repository
         run: |
           git clone https://huggingface.co/spaces/${{ secrets.HF_USERNAME }}/${{ secrets.HF_SPACENAME }}
-          cd ${{ secrets.HF_SPACENAME }}  # Cambia directory dentro del repository clonato
-
-      - name: Check git status
-        run: |
-          git status  # Controlla lo stato del repository per vedere se ci sono modifiche non tracciate
-
-      - name: Append timestamp to Updates file
-        run: |
-          echo "$(date)" >> Updates  # Appende la data e l'ora corrente al file Updates
-          git add Updates              # Aggiungi il file Updates alla staging area
-          git commit -m "Update timestamp in Updates file"  # Commit con il messaggio desiderato
-
-      - name: Check local commits
-        run: |
-          git log --oneline  # Visualizza i commit locali per vedere se il commit è stato creato
-
-      - name: Check if there are changes to commit
-        run: |
-          git diff --quiet || echo "Changes detected"  # Verifica se ci sono modifiche
-
-      - name: Check current branch
-        run: |
-          git branch  # Verifica il ramo attuale
-
-      - name: Fetch changes from Hugging Face Space repository
-        run: |
-          git remote add hf https://huggingface.co/spaces/${{ secrets.HF_USERNAME }}/${{ secrets.HF_SPACENAME }}  # Aggiungi il remoto Hugging Face
-          git fetch hf  # Recupera i cambiamenti dal repository remoto di Hugging Face
-
-      - name: Merge changes and push
-        run: |
-          git merge hf/main --strategy=recursive --strategy-option=theirs  # Risolvi conflitti mantenendo le modifiche remote
-          git push https://${{ secrets.HF_USERNAME }}:${{ secrets.HF_TOKEN }}@huggingface.co/spaces/${{ secrets.HF_USERNAME }}/${{ secrets.HF_SPACENAME }} main  # Fai il push sul repository di Hugging Face
+          cd ${{ secrets.HF_SPACENAME }}
+          
+          # Crea il file Updates se non esiste
+          touch Updates
+          
+          # Appende il timestamp al file Updates
+          echo "$(date)" >> Updates
+          
+          # Controlla se ci sono modifiche da committare
+          if git diff --quiet && git diff --staged --quiet; then
+            echo "Nessuna modifica da committare"
+            exit 0
+          fi
+          
+          # Aggiungi e committa le modifiche
+          git add Updates
+          git commit -m "Update timestamp in Updates file - $(date)"
+          
+          # Push delle modifiche a Hugging Face
+          git push https://${{ secrets.HF_USERNAME }}:${{ secrets.HF_TOKEN }}@huggingface.co/spaces/${{ secrets.HF_USERNAME }}/${{ secrets.HF_SPACENAME }} main
