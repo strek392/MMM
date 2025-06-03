@@ -29,6 +29,18 @@ jobs:
           git add Updates              # Aggiungi il file Updates alla staging area
           git commit -m "Update timestamp in Updates file"  # Commit con il messaggio desiderato
 
+      - name: Check local commits
+        run: |
+          git log --oneline  # Visualizza i commit locali per vedere se il commit è stato creato
+
+      - name: Check git status
+        run: |
+          git status  # Controlla se ci sono modifiche locali da fare il commit
+
+      - name: Check current branch
+        run: |
+          git branch  # Verifica il ramo attuale
+
       - name: Push changes to Hugging Face Space
         run: |
           git remote add hf https://huggingface.co/spaces/${{ secrets.HF_USERNAME }}/${{ secrets.HF_SPACENAME }}  # Aggiungi il remoto Hugging Face
