@@ -1,16 +1,39 @@
-name: Rebuild HF Space
+name: Trigger Rebuild on Hugging Face Space
 
 on:
-  workflow_dispatch:  # Puoi avviarlo manualmente
-  push:               # O a ogni push (opzionale)
+  push:
     branches:
-      - main
+      - main  # o il ramo che vuoi
 
 jobs:
   rebuild:
     runs-on: ubuntu-latest
+    
     steps:
-      - name: Trigger rebuild on Hugging Face Space
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Git for Hugging Face Repo
         run: |
-          curl -X POST https://api.huggingface.co/spaces/${{secrets.HF_USERNAME}}/${{secrets.HF_SPACENAME}}/restart \
-          -H "Authorization: Bearer ${{ secrets.HF_TOKEN }}"
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+        
+      - name: Clone Hugging Face Space repository
+        run: |
+          git clone https://huggingface.co/spaces/YOUR_USERNAME/YOUR_SPACE_NAME
+          cd YOUR_SPACE_NAME
+
+      - name: Update
+        run: |
+          echo "$(date)" >> Updates  # Appende la data e l'ora corrente al file Updates
+          git add Updates              # Aggiungi il file Updates alla staging area
+          git commit -m "Update timestamp in Updates file"  # Commit con il messaggio desiderato
+
+      - name: Push changes to Hugging Face Space
+        run: |
+          run: git push https://YOUR_USERNAME:$HF_TOKEN@huggingface.co/spaces/YOUR_USERNAME/YOUR_SPACE_NAME main        env:
+        env:
+          YOUR_USERNAME: ${{secrets.HF_USERNAME}}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          SPACE_NAME: ${{secrets.HF_SPACENAME}
+    
