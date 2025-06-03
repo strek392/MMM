@@ -10,9 +10,6 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
       - name: Set up Git for Hugging Face Repo
         run: |
           git config --global user.name "GitHub Actions"
@@ -45,5 +42,4 @@ jobs:
         run: |
           git remote add hf https://huggingface.co/spaces/${{ secrets.HF_USERNAME }}/${{ secrets.HF_SPACENAME }}  # Aggiungi il remoto Hugging Face
           git fetch hf  # Recupera i cambiamenti dal repository remoto di Hugging Face
-          git reset --hard hf/main  # Resetta la tua branch locale a quella remota (sovrascrive le modifiche locali)
           git push --force https://${{ secrets.HF_USERNAME }}:${{ secrets.HF_TOKEN }}@huggingface.co/spaces/${{ secrets.HF_USERNAME }}/${{ secrets.HF_SPACENAME }} main  # Fai il push forzato sul repository di Hugging Face
