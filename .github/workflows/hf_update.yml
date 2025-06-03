@@ -31,4 +31,5 @@ jobs:
 
       - name: Push changes to Hugging Face Space
         run: |
+          git pull origin main  # Recupera le modifiche remote prima di fare il push
           git push https://${{ secrets.HF_USERNAME }}:${{ secrets.HF_TOKEN }}@huggingface.co/spaces/${{ secrets.HF_USERNAME }}/${{ secrets.HF_SPACENAME }} main
