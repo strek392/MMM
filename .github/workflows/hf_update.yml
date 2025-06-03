@@ -12,5 +12,5 @@ jobs:
     steps:
       - name: Trigger rebuild on Hugging Face Space
         run: |
-          curl -X POST https://api.huggingface.co/spaces/${{secrets.HF_USERNAME}}/${{HF_SPACENAME}}/restart \
+          curl -X POST https://api.huggingface.co/spaces/${{secrets.HF_USERNAME}}/${{secrets.HF_SPACENAME}}/restart \
           -H "Authorization: Bearer ${{ secrets.HF_TOKEN }}"
