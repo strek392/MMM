@@ -24,6 +24,13 @@ jobs:
           # Appende il timestamp al file Updates
           echo "$(date)" >> Updates
           
+          # Forza un rebuild senza cache modificando il Dockerfile
+          if [ -f "Dockerfile" ]; then
+            # Rimuovi eventuali righe di timestamp precedenti e aggiungi quella nuova
+            sed -i '/^# REBUILD_TIMESTAMP:/d' Dockerfile
+            echo "# REBUILD_TIMESTAMP: $(date)" >> Dockerfile
+          fi
+          
           # Controlla se ci sono modifiche da committare
           if git diff --quiet && git diff --staged --quiet; then
             echo "Nessuna modifica da committare"
@@ -31,14 +38,8 @@ jobs:
           fi
           
           # Aggiungi e committa le modifiche
-          git add Updates
-          git commit -m "Update timestamp in Updates file - $(date)"
+          git add Updates Dockerfile
+          git commit -m "Force rebuild - Update timestamp $(date)"
           
           # Push delle modifiche a Hugging Face
           git push https://${{ secrets.HF_USERNAME }}:${{ secrets.HF_TOKEN }}@huggingface.co/spaces/${{ secrets.HF_USERNAME }}/${{ secrets.HF_SPACENAME }} main
-      - name: Trigger Factory Rebuild on Hugging Face Space
-        run: |
-          curl -X POST \
-            -H "Authorization: Bearer ${{ secrets.HF_TOKEN }}" \
-            -H "Content-Type: application/json" \
-            https://huggingface.co/api/spaces/${{ secrets.HF_USERNAME }}/${{ secrets.HF_SPACENAME }}/restart
