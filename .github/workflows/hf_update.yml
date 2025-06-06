@@ -1,8 +1,9 @@
 name: Trigger Rebuild on Hugging Face Space
 on:
-  push:
-    branches:
-      - main  # o il ramo che vuoi
+  repository_dispatch:
+    types: [trigger-hf-rebuild]
+  workflow_call:
+  workflow_dispatch:
 jobs:
   rebuild:
     runs-on: ubuntu-latest
