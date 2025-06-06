@@ -27,12 +27,17 @@ jobs:
           # Forza un rebuild senza cache creando/modificando un file dummy
           echo "# REBUILD_TIMESTAMP: $(date)" > .rebuild_trigger
           
-          # Opzionalmente, modifica anche il Dockerfile in modo sicuro
+          # Modifica il Dockerfile per forzare il pull dell'ultimo commit
           if [ -f "Dockerfile" ]; then
             # Rimuovi eventuali righe di timestamp precedenti
             sed -i '/^# REBUILD_TIMESTAMP:/d' Dockerfile
-            # Inserisci il timestamp prima dell'ultima riga (CMD)
-            sed -i '$i# REBUILD_TIMESTAMP: '"$(date)" Dockerfile
+            sed -i '/^# CACHE_BUST:/d' Dockerfile
+            
+            # Aggiungi una variabile cache-bust prima del git clone
+            sed -i '/^RUN git clone/i# CACHE_BUST: '"$(date +%s)" Dockerfile
+            
+            # Modifica il comando git clone per assicurarsi di prendere l'ultimo commit
+            sed -i 's|RUN git clone https://github.com/strek392/MMM.git .|RUN git clone https://github.com/strek392/MMM.git . \&\& git pull origin main|' Dockerfile
           fi
           
           # Controlla se ci sono modifiche da committare
