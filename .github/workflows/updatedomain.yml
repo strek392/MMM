@@ -69,4 +69,5 @@ jobs:
   trigger-rebuild:
     needs: update-domains
     uses: ./.github/workflows/hf_update.yml
+    secrets: inherit
      
